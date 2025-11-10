@@ -6,12 +6,12 @@ using System.Text; //Iconos
 OutputEncoding = Encoding.UTF8;
 
 //CONSTANTES GLOBALES
-const int RowSize = 3;
-const int ColSize = 2;
+const int RowSize = 5;
+const int ColSize = 5;
 const int Flylifes = 2;
 const int MaxPlayerAttempts = 5;
 
-//Procedimiento que imprime el vector
+//Procedimiento que imprime el vector, la posicion de la mosca y la piedra
 void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
     
     for(int i = 0; i < RowSize; i++){
@@ -29,9 +29,9 @@ void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
         }
         WriteLine();
     }
-    WriteLine("------------------------");
 }
 
+//Genera la posicion de la mosca en una fila de la matriz
 int GenerateFlyPositionRow(){
     Random random = new Random();
     
@@ -41,16 +41,17 @@ int GenerateFlyPositionRow(){
     return position.PositionRow ;
 }
 
+//Genera la posicion de la mosca en una columna de la matriz
 int GenerateFlyPositionCol(){
     Random random = new Random();
     
-    
     FlyState position;
-    position.PositionCol = random.Next(0, ColSize);
+    position.PositionCol = random.Next(0, ColSize); //Asig
     
     return position.PositionCol ;
 }
 
+//Tira la piedra a una columna concreta
 int ThrowRockCol() {
     
     //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
@@ -77,6 +78,7 @@ int ThrowRockCol() {
     return result - 1; //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
 }
 
+//Tira la piedra a una fila en concreto
 int ThrowRockRow() {
     
     //Utilizo él - 1 para que comience a pegar en un número equivalente a la posicion de los índices
@@ -103,21 +105,32 @@ int ThrowRockRow() {
     return result - 1; //Utilizo el - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
 }
 
+/*
+ * Esta funcion quita un intento al jugador
+ */
 int TakeOffPlayerLife(int intentos){
     return intentos - 1;
 }
 
+/*
+ * Esta funcion quita una vida a la mosca
+ */
 int takeOffFlylife(ref int flyLifes){
     return flyLifes - 1; 
 }
 
+/*
+ * Esta funcion analiza el golpe de la piedra y quita intentos al jugador o vidas a la mosca segun el resultado
+ */
 void AnalizarGolpeo(FlyState position, HitInfo hitInfo, ref int intentos, ref int flyLifes){
     
+    //Tipos de golpes predefinidos
     HitInfo hitType;
     hitType.Goal = "🎯 Has dado a la mosca! Enhorabuena 🎯";
     hitType.Almost = "☣️ Casi das a la mosca, cambiando de posicion... ☣️";
     hitType.Miss = " ❌ Has fallado, sigue intentandolo ❌";
 
+    //Comprobamos las posiciones adyacentes en una casilla al lanzamiento
     if(position.PositionCol == hitInfo.HitCol && position.PositionRow == hitInfo.HitRow){
         WriteLine(hitType.Goal);
         flyLifes = takeOffFlylife(ref flyLifes);
@@ -172,28 +185,42 @@ void AnalizarGolpeo(FlyState position, HitInfo hitInfo, ref int intentos, ref in
     }
 }
 
+/*
+ * Funcion principal que gestiona el flujo de procedimientos y funciones
+ */
 void PlayFlyGame(){
 
+    //Vidas de el jugador
     int playerAttempts = MaxPlayerAttempts;
+    
+    //Vidas de la mosca
     int flylifes = Flylifes;
     
-    do{
+    //Bucle que acabara cuando los intentos del jugador o las vidas de la mosca lleguen a 0
+    do {
+        
+        //Variables que llaman a las funciones para poner a la mosca en la matriz
         FlyState flyPosition = new FlyState();
-        flyPosition.PositionCol = GenerateFlyPositionCol();
-        flyPosition.PositionRow = GenerateFlyPositionRow();
+        flyPosition.PositionCol = GenerateFlyPositionCol(); //La mosca se coloca en una columna
+        flyPosition.PositionRow = GenerateFlyPositionRow(); //La mosca se coloca en una fila
     
+        //Variables que llaman a lanzar roca
         HitInfo hitInfo = new HitInfo();
-        hitInfo.HitRow = ThrowRockRow();
-        hitInfo.HitCol = ThrowRockCol();
+        hitInfo.HitRow = ThrowRockRow(); //Lanza la roca en el elemento fila
+        hitInfo.HitCol = ThrowRockCol(); //Lanza la roca en el elemento columna
 
+        //Imprime el vector con la posicion de la mosca y la piedra
         PrintVectorAndHit(flyPosition, hitInfo);
     
+        //Analiza la situacion en el tablero con el lanzamiento de la piedra y la posicion de la mosca
         AnalizarGolpeo(flyPosition, hitInfo, ref playerAttempts, ref flylifes);
 
+        //Si los intentos del jugador llegan a 0 se acaba el juego
         if(playerAttempts == 0){
             WriteLine("Te has quedado sin intentos, suerte la proxima vez");
         }
 
+        //Si las vidas de la mosca llegan a 0 se acaba el juego
         if(flylifes == 0){
             WriteLine("La mosca se ha quedado sin vidas ¡Has ganado!");
         }
@@ -204,12 +231,7 @@ void PlayFlyGame(){
 
 //--INICIO DEL MAIN--
 
-Configuration sizeMap;
-
-//Matriz de tamaño [rowSize] filas y [colSize] columnas
-sizeMap.Size = new int[RowSize, ColSize];
-
-//Imprime el tamaño del vector
+//Llama a la funcion principal del juego
 PlayFlyGame();
 
 //--FIN DEL MAIN--
