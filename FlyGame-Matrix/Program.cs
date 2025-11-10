@@ -6,14 +6,15 @@ using System.Text; //Iconos
 OutputEncoding = Encoding.UTF8;
 
 //CONSTANTES GLOBALES
-const int rowSize = 10;
-const int colSize = 10;
-
+const int RowSize = 10;
+const int ColSize = 10;
+const int Attempts = 5;
+const int Flylifes = 2;
 
 //Procedimiento que imprime el vector
-void printVector(){
-    for(int i = 0; i < rowSize; i++){
-        for(int j = 0; j < colSize; j++){
+void PrintVector(){
+    for(int i = 0; i < RowSize; i++){
+        for(int j = 0; j < ColSize; j++){
             Write($"[{i}{j}]");
         }
         WriteLine();
@@ -29,15 +30,15 @@ int ThrowRock() {
     bool isOk = false;
 
     do {
-        WriteLine($"Introduce el número de la casilla a la que lanzas la piedra (posición 1 a {rowSize} {colSize})");
+        WriteLine($"Introduce el número de la casilla a la que lanzas la piedra (posición 1 a {RowSize} {ColSize})");
         string input = ReadLine();
         
         //Intenta realizar la conversion de string a entero
-        if (int.TryParse(input, out result) && result >= 1 && result <= rowSize && result <= colSize) {
+        if (int.TryParse(input, out result) && result >= 1 && result <= RowSize && result <= ColSize) {
             isOk = true; 
             
         } else {
-            WriteLine($"Entrada no válida. Por favor, introduce un número entero entre 1 y {colSize} {rowSize}.");
+            WriteLine($"Entrada no válida. Por favor, introduce un número entero entre 1 y {ColSize} {RowSize}.");
             isOk = false;
         }
         
@@ -47,6 +48,37 @@ int ThrowRock() {
 }
 
 void PlayFlyGame(){
+
+    HitInfo throwRock = new HitInfo();
+    
+    do {
+        
+        throwRock.Hits = ThrowRock();
+        
+        
+        
+        
+        
+    } while(Flylifes != 0 || Attempts != 0);
+}
+
+int TakeOffFlyLife(){
+    FlyState life;
+
+    life.LifeNumber = Flylifes;
+
+    return Flylifes - 1;
+}
+
+int TakeOffAttempts(){
+    Configuration PlayerLife;
+
+    PlayerLife.intentos = Attempts;
+
+    return Attempts - 1;
+}
+
+void PrintMoscaState(){
     
 }
 
@@ -58,9 +90,9 @@ void PlayFlyGame(){
 Configuration sizeMap;
 
 //Matriz de tamaño [rowSize] filas y [colSize] columnas
-sizeMap.Size = new int[rowSize, colSize];
+sizeMap.Size = new int[RowSize, ColSize];
 
 //Imprime el tamaño del vector
-printVector();
+PrintVector();
 
 //--FIN DEL MAIN--
