@@ -3,5 +3,6 @@
         public string Almost;
         public string Goal;
         public string Miss;
+        public int Hits;
     }
 }
