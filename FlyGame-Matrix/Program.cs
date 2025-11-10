@@ -1,3 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
+using static System.Console;
 
-Console.WriteLine("Hello, World!");
+//--ZONA DE FUNCIONES--
+
+//--FIN DE ZONA DE FUNCIONES--
+
+//--INICIO DEL MAIN--
+
+//--FIN DEL MAIN--
