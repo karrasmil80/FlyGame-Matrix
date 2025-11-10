@@ -11,7 +11,9 @@ const int ColSize = 5;
 const int Flylifes = 2;
 const int MaxPlayerAttempts = 5;
 
-//Procedimiento que imprime el vector, la posicion de la mosca y la piedra
+/*
+ * Procedimiento que imprime el vector, la posicion de la mosca y la piedra
+ */
 void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
     
     for(int i = 0; i < RowSize; i++){
@@ -31,7 +33,9 @@ void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
     }
 }
 
-//Genera la posicion de la mosca en una fila de la matriz
+/*
+ * Genera la posicion de la mosca en una fila de la matriz
+ */
 int GenerateFlyPositionRow(){
     Random random = new Random();
     
@@ -41,7 +45,9 @@ int GenerateFlyPositionRow(){
     return position.PositionRow ;
 }
 
-//Genera la posicion de la mosca en una columna de la matriz
+/*
+ * Genera la posicion de la mosca en una columna de la matriz
+ */
 int GenerateFlyPositionCol(){
     Random random = new Random();
     
@@ -51,7 +57,9 @@ int GenerateFlyPositionCol(){
     return position.PositionCol ;
 }
 
-//Tira la piedra a una columna concreta
+/*
+ * Tira la piedra a una columna concreta
+ */
 int ThrowRockCol() {
     
     //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
@@ -78,7 +86,9 @@ int ThrowRockCol() {
     return result - 1; //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
 }
 
-//Tira la piedra a una fila en concreto
+/*
+ * Tira la piedra a una fila en concreto
+ */
 int ThrowRockRow() {
     
     //Utilizo él - 1 para que comience a pegar en un número equivalente a la posicion de los índices
@@ -228,10 +238,11 @@ void PlayFlyGame(){
     } while(flylifes != 0 && playerAttempts != 0 );
 }
 
-
-//--INICIO DEL MAIN--
+//---------------
+//INICIO DEL MAIN
 
 //Llama a la funcion principal del juego
 PlayFlyGame();
 
-//--FIN DEL MAIN--
+//FIN DEL MAIN
+//---------------
