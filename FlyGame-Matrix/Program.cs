@@ -6,43 +6,29 @@ using System.Text; //Iconos
 OutputEncoding = Encoding.UTF8;
 
 //CONSTANTES GLOBALES
-const int RowSize = 3;
-const int ColSize = 3;
-const int Attempts = 5;
+const int RowSize = 5;
+const int ColSize = 5;
 const int Flylifes = 2;
 
 //Procedimiento que imprime el vector
-void PrintVectorAndHit(){
-    
-    FlyState positionCol;
-    FlyState positionRow;
-    
-    positionCol.PositionCol = GenerateFlyPositionCol();
-    positionRow.PositionRow = GenerateFlyPositionRow();
-
-    HitInfo hitCol;
-    HitInfo hitRow;
-
-    hitRow.HitRow = ThrowRockRow();
-    hitCol.HitCol = ThrowRockCol();
+void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
     
     for(int i = 0; i < RowSize; i++){
         for(int j = 0; j < ColSize; j++){
-            if(i == positionRow.PositionRow && j == positionCol.PositionCol){
+            // Comprobamos si es la mosca
+            if(i == position.PositionRow && j == position.PositionCol){
                 Write("[🪰]");
-                
-            } else if(i == hitRow.HitRow && j == hitCol.HitCol){
+                // Comprobamos si es el golpe
+            } else if(i == hitInfo.HitRow && j == hitInfo.HitCol){
                 Write("[🪨]");
-                
             } else {
-                Write($"[{i}{j}]");
+                Write($"[{i} {j}]");
             }
             
         }
         WriteLine();
     }
-
-    
+    WriteLine("------------------------");
 }
 
 int GenerateFlyPositionRow(){
@@ -56,6 +42,7 @@ int GenerateFlyPositionRow(){
 
 int GenerateFlyPositionCol(){
     Random random = new Random();
+    
     
     FlyState position;
     position.PositionCol = random.Next(0, ColSize);
@@ -86,12 +73,12 @@ int ThrowRockCol() {
         
     } while (!isOk); //Si el parseo a entero falla el bucle se repite
     
-    return result - 1; //Utilizo el - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
+    return result - 1; //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
 }
 
 int ThrowRockRow() {
     
-    //Utilizo él - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
+    //Utilizo él - 1 para que comience a pegar en un número equivalente a la posicion de los índices
     int result = -1;
     
     //Variable bandera para decidir cuando se repite el bucle
@@ -115,64 +102,91 @@ int ThrowRockRow() {
     return result - 1; //Utilizo el - 1 para que comience a pegar en un numero equivalente a la posicion de los indices
 }
 
-string AnalizarGolpeo(FlyState position, HitInfo hitInfo){
+int TakeOffPlayerLife(int intentos){
+    return intentos - 1;
+}
 
-    HitInfo hitType;
+
+void AnalizarGolpeo(FlyState position, HitInfo hitInfo){
     
+    Configuration attempts;
+
+    attempts.intentos = TakeOffPlayerLife(intentos:5);
+    
+    HitInfo hitType;
     hitType.Goal = "🎯 Has dado a la mosca! Enhorabuena 🎯";
     hitType.Almost = "☣️ Casi das a la mosca, cambiando de posicion... ☣️";
     hitType.Miss = " ❌ Has fallado, sigue intentandolo ❌";
 
     if(position.PositionCol == hitInfo.HitCol && position.PositionRow == hitInfo.HitRow){
-        return hitType.Goal;
-        TakeOffFlyLife();
-        
+        WriteLine(hitType.Goal);
+        attempts.intentos--;
+
     } else if(position.PositionCol == hitInfo.HitCol && position.PositionRow == hitInfo.HitRow - 1){
-        return hitType.Almost;
-        TakeOffAttempts();
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow - 1){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow + 1){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol  && position.PositionRow == hitInfo.HitRow + 1 ){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow + 1){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow - 1){
-        return hitType.Almost;
+        WriteLine(hitType.Almost);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
+        
+    } else {
+        WriteLine(hitType.Miss);
+        attempts.intentos--;
+        WriteLine($"Te quedan {attempts.intentos} intentos");
+        
     }
+}
 
-    else{
-        return hitType.Miss;
-    }
+void PlayFlyGame(){
     
-}
+    
+    do{
+        FlyState flyPosition = new FlyState();
+        flyPosition.PositionCol = GenerateFlyPositionCol();
+        flyPosition.PositionRow = GenerateFlyPositionRow();
+    
+        HitInfo hitInfo = new HitInfo();
+        hitInfo.HitRow = ThrowRockRow();
+        hitInfo.HitCol = ThrowRockCol();
 
-int TakeOffFlyLife(){
-    FlyState life;
-
-    life.LifeNumber = Flylifes;
-
-    return Flylifes - 1;
-}
-
-int TakeOffAttempts(){
-    Configuration PlayerLife;
-
-    PlayerLife.intentos = Attempts;
-
-    return Attempts - 1;
+        PrintVectorAndHit(flyPosition, hitInfo);
+    
+        AnalizarGolpeo(flyPosition, hitInfo);
+        
+    } while(Flylifes != 0);
 }
 
 
@@ -187,6 +201,6 @@ Configuration sizeMap;
 sizeMap.Size = new int[RowSize, ColSize];
 
 //Imprime el tamaño del vector
-PrintVectorAndHit();
+PlayFlyGame();
 
 //--FIN DEL MAIN--
