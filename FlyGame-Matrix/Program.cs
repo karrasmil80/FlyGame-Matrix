@@ -6,9 +6,10 @@ using System.Text; //Iconos
 OutputEncoding = Encoding.UTF8;
 
 //CONSTANTES GLOBALES
-const int RowSize = 5;
-const int ColSize = 5;
+const int RowSize = 3;
+const int ColSize = 2;
 const int Flylifes = 2;
+const int MaxPlayerAttempts = 5;
 
 //Procedimiento que imprime el vector
 void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
@@ -22,7 +23,7 @@ void PrintVectorAndHit(FlyState position, HitInfo hitInfo){
             } else if(i == hitInfo.HitRow && j == hitInfo.HitCol){
                 Write("[🪨]");
             } else {
-                Write($"[{i} {j}]");
+                Write($"[{i}{j}]");
             }
             
         }
@@ -106,12 +107,11 @@ int TakeOffPlayerLife(int intentos){
     return intentos - 1;
 }
 
+int takeOffFlylife(ref int flyLifes){
+    return flyLifes - 1; 
+}
 
-void AnalizarGolpeo(FlyState position, HitInfo hitInfo){
-    
-    Configuration attempts;
-
-    attempts.intentos = TakeOffPlayerLife(intentos:5);
+void AnalizarGolpeo(FlyState position, HitInfo hitInfo, ref int intentos, ref int flyLifes){
     
     HitInfo hitType;
     hitType.Goal = "🎯 Has dado a la mosca! Enhorabuena 🎯";
@@ -120,58 +120,62 @@ void AnalizarGolpeo(FlyState position, HitInfo hitInfo){
 
     if(position.PositionCol == hitInfo.HitCol && position.PositionRow == hitInfo.HitRow){
         WriteLine(hitType.Goal);
-        attempts.intentos--;
+        flyLifes = takeOffFlylife(ref flyLifes);
+        WriteLine($"A la mosca le quedan {flyLifes} vidas");
+
 
     } else if(position.PositionCol == hitInfo.HitCol && position.PositionRow == hitInfo.HitRow - 1){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
+        
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow - 1){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol + 1 && position.PositionRow == hitInfo.HitRow + 1){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol  && position.PositionRow == hitInfo.HitRow + 1 ){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow + 1){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else if(position.PositionCol == hitInfo.HitCol - 1 && position.PositionRow == hitInfo.HitRow - 1){
         WriteLine(hitType.Almost);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
         
     } else {
         WriteLine(hitType.Miss);
-        attempts.intentos--;
-        WriteLine($"Te quedan {attempts.intentos} intentos");
-        
+        intentos = TakeOffPlayerLife(intentos);
+        WriteLine($"Te quedan {intentos} intentos");
     }
 }
 
 void PlayFlyGame(){
-    
+
+    int playerAttempts = MaxPlayerAttempts;
+    int flylifes = Flylifes;
     
     do{
         FlyState flyPosition = new FlyState();
@@ -184,13 +188,18 @@ void PlayFlyGame(){
 
         PrintVectorAndHit(flyPosition, hitInfo);
     
-        AnalizarGolpeo(flyPosition, hitInfo);
+        AnalizarGolpeo(flyPosition, hitInfo, ref playerAttempts, ref flylifes);
+
+        if(playerAttempts == 0){
+            WriteLine("Te has quedado sin intentos, suerte la proxima vez");
+        }
+
+        if(flylifes == 0){
+            WriteLine("La mosca se ha quedado sin vidas ¡Has ganado!");
+        }
         
-    } while(Flylifes != 0);
+    } while(flylifes != 0 && playerAttempts != 0 );
 }
-
-
-
 
 
 //--INICIO DEL MAIN--
